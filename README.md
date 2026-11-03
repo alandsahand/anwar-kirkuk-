@@ -20,10 +20,13 @@ npm run dev      # http://localhost:5173
 npm run build    # outputs dist/
 ```
 
-## Deploy to Cloudflare Pages
+## Deploy to Cloudflare (Workers)
 
-1. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → pick this repo.
-2. Framework preset: **Vite**. Build command: `npm run build`. Output directory: `dist`.
-3. After the first deploy: **Custom domains → Add** `anwarkirkuk.com` (and `www`). The domain is already on Cloudflare, so DNS is set up automatically.
+`wrangler.jsonc` tells Cloudflare to serve the built `dist/` folder.
+
+1. Cloudflare dashboard → **Workers & Pages → Create → Import a repository** → pick this repo.
+2. Project name: `anwar-kirkuk` (it must match `name` in `wrangler.jsonc`). Build command: `npm run build`. Deploy command: `npx wrangler deploy`.
+3. Worker → **Settings → Build → Branch control**: set the production branch to the branch that has the site.
+4. Worker → **Settings → Domains & Routes → Add → Custom domain**: add `anwarkirkuk.com` and `www.anwarkirkuk.com`.
 
 Every push to the production branch redeploys the site.
