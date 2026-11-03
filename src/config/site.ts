@@ -9,7 +9,11 @@ export const site = {
     // WhatsApp number in international format, digits only
     whatsapp: '9647750181710', // TODO: confirm which number has WhatsApp
     phones: ['07750181710', '07850181710'],
-    email: '', // optional — e.g. 'info@anwarkirkuk.com'
+    emails: [
+      { role: 'sales', address: 'sales@anwarkirkuk.com' },
+      { role: 'office', address: 'office@anwarkirkuk.com' },
+      { role: 'info', address: 'info@anwarkirkuk.com' },
+    ] as const,
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Darman+Erbil+Road+Kirkuk', // TODO: paste your exact Google Maps pin
   },
   social: {

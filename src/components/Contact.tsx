@@ -1,20 +1,27 @@
+import type { ReactNode } from 'react'
 import { site, telLink, whatsappLink } from '../config/site'
 import { useLang } from '../i18n'
 import { FacebookIcon, MailIcon, PhoneIcon, PinIcon, WhatsAppIcon } from './Icons'
 import { LogoMark } from './Logo'
 import { Button, Eyebrow, Reveal, sheen, Title } from './ui'
 
+const mailto = (address: string, subject: string) => `mailto:${address}?subject=${encodeURIComponent(subject)}`
+const iconBox = (icon: ReactNode) => (
+  <span className="grid size-12 place-items-center rounded-2xl bg-brand/15 text-brand-hi ring-1 ring-brand/30">{icon}</span>
+)
+
 export function Contact() {
   const { t } = useLang()
   const { contact } = site
-  type Card = { icon: React.ReactNode; label: string; lines: string[]; href?: string; external?: boolean; ltr?: boolean }
+  const subject = t.meta.title
+  type Card = { icon: ReactNode; label: string; lines: string[]; href: string; external?: boolean; ltr?: boolean }
   const cards: Card[] = [
     { icon: <WhatsAppIcon className="size-6" />, label: t.contact.labels.whatsapp, lines: [`0${contact.whatsapp.slice(3)}`], href: whatsappLink(t.whatsappDefault), external: true, ltr: true },
     { icon: <PhoneIcon className="size-6" />, label: t.contact.labels.call, lines: contact.phones, href: telLink(contact.phones[0]), ltr: true },
     { icon: <PinIcon className="size-6" />, label: t.contact.labels.visit, lines: [t.contact.address, t.contact.hours], href: contact.mapsUrl, external: true },
     { icon: <FacebookIcon className="size-6" />, label: t.contact.labels.facebook, lines: [t.company], href: site.social.facebook, external: true },
   ]
-  if (contact.email) cards.push({ icon: <MailIcon className="size-6" />, label: 'Email', lines: [contact.email], href: `mailto:${contact.email}`, ltr: true })
+  const cardCls = 'glass glass-sheen block h-full rounded-[2rem] p-7 transition duration-500'
 
   return (
     <section id="contact" className="scroll-mt-24 px-4 py-24 sm:py-32">
@@ -28,27 +35,30 @@ export function Contact() {
             </div>
             <Title className="relative mx-auto max-w-3xl">{t.contact.title}</Title>
             <p className="relative mx-auto mt-5 max-w-xl text-lg text-white/60 rtl:leading-loose">{t.contact.lead}</p>
-            <div className="relative mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+            <div className="relative mt-10 flex flex-col flex-wrap justify-center gap-3 sm:flex-row">
               <Button href={whatsappLink(t.whatsappDefault)} external>
                 <WhatsAppIcon /> {t.contact.whatsapp}
               </Button>
               <Button href={telLink(contact.phones[0])} variant="glass">
                 <PhoneIcon /> {t.contact.call}
               </Button>
+              <Button href={mailto(contact.emails[0].address, subject)} variant="glass">
+                <MailIcon /> {t.contact.emailBtn}
+              </Button>
             </div>
           </div>
         </Reveal>
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((c, i) => (
             <Reveal key={i} delay={i * 0.08}>
               <a
                 href={c.href}
                 {...sheen}
                 {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                className="glass glass-sheen block h-full rounded-[2rem] p-7 transition duration-500 hover:-translate-y-1"
+                className={`${cardCls} hover:-translate-y-1`}
               >
-                <span className="grid size-12 place-items-center rounded-2xl bg-brand/15 text-brand-hi ring-1 ring-brand/30">{c.icon}</span>
+                {iconBox(c.icon)}
                 <span className="mt-6 block text-sm text-white/45">{c.label}</span>
                 {c.lines.map((l, k) => (
                   <span
@@ -62,6 +72,29 @@ export function Contact() {
               </a>
             </Reveal>
           ))}
+
+          {/* Email card: one row per address */}
+          <Reveal delay={0.32} className="sm:col-span-2">
+            <div {...sheen} className={cardCls}>
+              {iconBox(<MailIcon className="size-6" />)}
+              <span className="mt-6 block text-sm text-white/45">{t.contact.labels.email}</span>
+              <ul className="mt-2 divide-y divide-white/[0.06]">
+                {contact.emails.map((e) => (
+                  <li key={e.address}>
+                    <a
+                      href={mailto(e.address, subject)}
+                      className="group flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 py-2.5 transition hover:text-brand-hi"
+                    >
+                      <span dir="ltr" className="latin text-lg font-medium break-all">
+                        {e.address}
+                      </span>
+                      <span className="text-sm text-white/45 group-hover:text-white/70">{t.contact.emailRoles[e.role]}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>
