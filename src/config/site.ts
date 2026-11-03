@@ -35,11 +35,14 @@ export type Video = {
   poster?: string
   /** true for phone-style 9:16 videos (reels / stories) */
   vertical?: boolean
+  /** Optional link to the same video on Facebook / YouTube, shown as a button */
+  link?: string
 }
 
 export const videos: Video[] = [
   {
-    src: 'https://www.facebook.com/reel/1533507298797026/',
+    src: `${import.meta.env.BASE_URL}videos/reel-imported-vs-local.mp4`,
+    link: 'https://www.facebook.com/reel/1533507298797026/',
     poster: `${import.meta.env.BASE_URL}videos/reel-imported-vs-local.jpg`,
     vertical: true,
   },

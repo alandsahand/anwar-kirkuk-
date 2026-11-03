@@ -57,9 +57,9 @@ export function Videos() {
           <Eyebrow>{t.videos.eyebrow}</Eyebrow>
           <Title>{t.videos.title}</Title>
           <p className="mt-6 max-w-lg text-xl leading-relaxed text-white/55 rtl:leading-loose">{t.videos.lead}</p>
-          {isFacebook(current.src) && (
+          {current.link && (
             <a
-              href={current.src}
+              href={current.link}
               target="_blank"
               rel="noopener noreferrer"
               className="glass mt-8 inline-flex items-center gap-2.5 rounded-full px-5 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10"
