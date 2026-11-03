@@ -8,15 +8,11 @@
         "--headless"
       ]
     },
-    "magic": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@21st-dev/magic@0.2.3"
-      ],
-      "env": {
-        "API_KEY": "${MAGIC_API_KEY}",
-        "NODE_USE_ENV_PROXY": "1"
+    "21st": {
+      "type": "http",
+      "url": "https://21st.dev/api/mcp",
+      "headers": {
+        "x-api-key": "${MAGIC_API_KEY}"
       }
     }
   }
