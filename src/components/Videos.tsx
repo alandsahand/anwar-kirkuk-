@@ -1,78 +1,99 @@
+import { motion } from 'motion/react'
 import { useState } from 'react'
 import { videos, type Video } from '../config/site'
-import { PlayIcon } from './Icons'
-import { LogoMark } from './Logo'
-import { Eyebrow, Reveal } from './ui'
+import { useLang } from '../i18n'
+import { FacebookIcon, PlayIcon } from './Icons'
+import { Eyebrow, Reveal, Title } from './ui'
 
-function youtubeId(src: string) {
-  const m = src.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/)
-  return m?.[1]
+const youtubeId = (src: string) => src.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/)?.[1]
+const isFacebook = (src: string) => /facebook\.com|fb\.watch/.test(src)
+
+function embedSrc(v: Video) {
+  const yt = youtubeId(v.src)
+  if (yt) return `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0&modestbranding=1`
+  if (isFacebook(v.src)) return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(v.src)}&show_text=false&autoplay=true&mute=false`
+  return null
 }
 
-function Player({ video }: { video: Video }) {
-  const yt = youtubeId(video.src)
-  if (yt) {
-    return (
-      <iframe
-        className="size-full"
-        src={`https://www.youtube-nocookie.com/embed/${yt}?rel=0&modestbranding=1`}
-        title={video.title}
-        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      />
+/** Shows the poster first; the heavy player loads only after a tap (keeps the page fast). */
+function Player({ video, label }: { video: Video; label: string }) {
+  const [playing, setPlaying] = useState(false)
+  const embed = embedSrc(video)
+  if (playing) {
+    return embed ? (
+      <iframe className="size-full" src={embed} title="video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
+    ) : (
+      <video className="size-full object-cover" src={video.src} poster={video.poster} controls autoPlay playsInline />
     )
   }
-  return <video key={video.src} className="size-full object-cover" src={video.src} poster={video.poster} controls playsInline preload="metadata" />
+  return (
+    <button onClick={() => setPlaying(true)} className="group relative block size-full" aria-label={label}>
+      {video.poster && <img src={video.poster} alt="" loading="lazy" className="size-full object-cover transition-transform duration-1000 group-hover:scale-105" />}
+      <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/20" />
+      <span className="absolute inset-0 grid place-items-center">
+        <motion.span
+          animate={{ boxShadow: ['0 0 0 0 rgb(227 20 11 / 0.6)', '0 0 0 22px rgb(227 20 11 / 0)'] }}
+          transition={{ duration: 1.8, repeat: Infinity }}
+          className="grid size-20 place-items-center rounded-full bg-brand/90 text-white backdrop-blur-md transition-transform group-hover:scale-110"
+        >
+          <PlayIcon className="ms-1 size-8" />
+        </motion.span>
+      </span>
+    </button>
+  )
 }
 
 export function Videos() {
+  const { t } = useLang()
   const [active, setActive] = useState(0)
   const current = videos[active]
+  if (!current) return null
+  const vertical = !!current.vertical
 
   return (
     <section id="videos" className="scroll-mt-24 px-4 py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <Eyebrow>Watch</Eyebrow>
-          <h2 className="text-gradient text-[clamp(2.2rem,5vw,4rem)] leading-[1.02] font-semibold tracking-[-0.04em]">See it in action.</h2>
+      <div className={`mx-auto max-w-6xl ${vertical ? 'grid items-center gap-12 lg:grid-cols-[1fr_auto] lg:gap-20' : ''}`}>
+        <Reveal className={vertical ? '' : 'mx-auto max-w-2xl text-center'}>
+          <Eyebrow>{t.videos.eyebrow}</Eyebrow>
+          <Title>{t.videos.title}</Title>
+          <p className="mt-6 max-w-lg text-xl leading-relaxed text-white/55 rtl:leading-loose">{t.videos.lead}</p>
+          {isFacebook(current.src) && (
+            <a
+              href={current.src}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="glass mt-8 inline-flex items-center gap-2.5 rounded-full px-5 py-3 text-sm font-medium text-white/85 transition hover:bg-white/10"
+            >
+              <FacebookIcon className="size-4 text-[#4b8bff]" /> {t.videos.facebook}
+            </a>
+          )}
         </Reveal>
 
-        <Reveal delay={0.15} className="mt-14">
-          <div className="glass rounded-[2.5rem] p-2.5 sm:p-3">
-            <div className="relative aspect-video overflow-hidden rounded-[2rem] bg-black">
-              {current ? (
-                <Player video={current} />
-              ) : (
-                <div className="grid size-full place-items-center bg-[radial-gradient(circle_at_50%_40%,rgb(227_20_11/0.25),transparent_60%)]">
-                  <div className="flex flex-col items-center gap-5 text-center">
-                    <LogoMark glow className="h-16 w-auto sm:h-24" />
-                    <span className="glass grid size-14 place-items-center rounded-full sm:size-16">
-                      <PlayIcon className="ml-0.5 size-6" />
-                    </span>
-                    <p className="text-sm tracking-[0.25em] text-white/50 uppercase">Our video ads are coming soon</p>
-                  </div>
-                </div>
-              )}
+        <Reveal delay={0.15} className={vertical ? 'mx-auto' : 'mt-14'}>
+          <div className="relative">
+            <div className="absolute -inset-10 -z-10 rounded-full bg-brand/20 blur-[80px]" />
+            <div className={`glass rounded-[2.75rem] p-2.5 ${vertical ? 'w-[min(78vw,340px)]' : ''}`}>
+              <div className={`relative overflow-hidden rounded-[2.25rem] bg-black ${vertical ? 'aspect-[9/16]' : 'aspect-video'}`}>
+                <Player key={current.src} video={current} label={t.videos.play} />
+              </div>
             </div>
           </div>
         </Reveal>
-
-        {videos.length > 1 && (
-          <div className="mt-5 flex gap-3 overflow-x-auto pb-2">
-            {videos.map((v, i) => (
-              <button
-                key={v.src}
-                onClick={() => setActive(i)}
-                className={`shrink-0 rounded-full px-5 py-2.5 text-sm transition ${
-                  i === active ? 'bg-brand text-white' : 'glass text-white/70 hover:text-white'
-                }`}
-              >
-                {v.title}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
+
+      {videos.length > 1 && (
+        <div className="mx-auto mt-6 flex max-w-6xl gap-3 overflow-x-auto pb-2">
+          {videos.map((v, i) => (
+            <button
+              key={v.src}
+              onClick={() => setActive(i)}
+              className={`latin shrink-0 rounded-full px-5 py-2.5 text-sm transition ${i === active ? 'bg-brand text-white' : 'glass text-white/70 hover:text-white'}`}
+            >
+              {String(i + 1).padStart(2, '0')}
+            </button>
+          ))}
+        </div>
+      )}
     </section>
   )
 }

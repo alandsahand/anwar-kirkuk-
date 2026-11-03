@@ -27,7 +27,17 @@ export const PlayIcon = ({ className = 'size-5' }: P) => (
   </svg>
 )
 export const ArrowIcon = ({ className = 'size-4' }: P) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className} aria-hidden>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`rtl:-scale-x-100 ${className}`} aria-hidden>
     <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+)
+export const FacebookIcon = ({ className = 'size-5' }: P) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+    <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.23 2.68.23v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07" />
+  </svg>
+)
+export const BoltIcon = ({ className = 'size-5' }: P) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+    <path d="M13.5 2 4 14h6.5L9.5 22 20 9.5h-6.8z" />
   </svg>
 )

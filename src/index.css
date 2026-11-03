@@ -105,3 +105,54 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Arabic / Kurdish ─────────────────────────────────── */
+[dir='rtl'] body {
+  font-family: 'Noto Kufi Arabic Variable', var(--font-sans);
+}
+/* Arabic script is connected: never letter-space it */
+[dir='rtl'] *:not(.latin) {
+  letter-spacing: 0 !important;
+}
+[dir='rtl'] h1,
+[dir='rtl'] h2,
+[dir='rtl'] .rtl-loose {
+  line-height: 1.35 !important;
+}
+
+/* ── Fancy text ───────────────────────────────────────── */
+@utility text-shimmer {
+  background: linear-gradient(
+    100deg,
+    #a10c06 0%,
+    #e3140b 20%,
+    #ff7a6e 35%,
+    #ffffff 45%,
+    #ff7a6e 55%,
+    #e3140b 70%,
+    #a10c06 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 6s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0% 0;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee 40s linear infinite;
+}

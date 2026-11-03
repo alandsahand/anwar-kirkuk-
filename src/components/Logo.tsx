@@ -46,10 +46,10 @@ export function LogoMark({ className = '', glow = false }: { className?: string;
 
 export function Wordmark({ className = '', lines = true }: { className?: string; lines?: boolean }) {
   return (
-    <span className={`inline-flex items-center gap-4 font-medium tracking-[0.32em] ${className}`}>
+    <span dir="ltr" className={`latin inline-flex items-center gap-4 font-medium tracking-[0.32em] ${className}`}>
       {lines && <span aria-hidden className="h-px w-8 bg-brand sm:w-12" />}
-      <span>
-        <span className="text-brand">ANWAR</span> <span className="text-silver">KIRKUK</span>
+      <span className="latin">
+        <span className="latin text-brand">ANWAR</span> <span className="latin text-silver">KIRKUK</span>
       </span>
       {lines && <span aria-hidden className="h-px w-8 bg-brand sm:w-12" />}
     </span>

@@ -19,7 +19,7 @@ export function Reveal({ children, delay = 0, y = 32, ...rest }: { children: Rea
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <p className="mb-4 inline-flex items-center gap-3 text-xs font-medium tracking-[0.3em] text-brand-hi uppercase">
+    <p className="mb-4 inline-flex items-center gap-3 text-xs font-medium tracking-[0.3em] text-brand-hi uppercase rtl:text-sm">
       <span className="h-px w-6 bg-brand" />
       {children}
     </p>
@@ -61,5 +61,12 @@ export function Button({
     <a href={href} className={`${base} ${styles}`} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
       {children}
     </a>
+  )
+}
+
+/** Big section title with consistent sizing. */
+export function Title({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return (
+    <h2 className={`text-gradient text-[clamp(2.2rem,5vw,4.25rem)] leading-[1.04] font-semibold tracking-[-0.04em] ${className}`}>{children}</h2>
   )
 }

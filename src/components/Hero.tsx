@@ -1,31 +1,66 @@
-import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'motion/react'
-import { useRef } from 'react'
-import { site, whatsappLink } from '../config/site'
-import { ArrowIcon, WhatsAppIcon } from './Icons'
-import { LogoMark, Wordmark } from './Logo'
+import { AnimatePresence, motion, useMotionValue, useScroll, useSpring, useTransform } from 'motion/react'
+import { useEffect, useRef, useState } from 'react'
+import { whatsappLink } from '../config/site'
+import { useLang } from '../i18n'
+import { ArrowIcon, BoltIcon, WhatsAppIcon } from './Icons'
+import { LogoMark } from './Logo'
 import { Button, ease } from './ui'
 
+function Rotating({ items }: { items: string[] }) {
+  const [i, setI] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => setI((n) => (n + 1) % items.length), 2600)
+    return () => clearInterval(id)
+  }, [items.length])
+  return (
+    <span className="glass inline-flex items-center gap-3 rounded-full py-2 ps-2 pe-5 text-sm sm:text-base">
+      <span className="grid size-8 place-items-center rounded-full bg-brand text-white shadow-[0_0_20px_rgb(227_20_11/0.7)]">
+        <BoltIcon className="size-4" />
+      </span>
+      <span className="relative inline-grid h-7 min-w-[14rem] items-center overflow-hidden text-start sm:min-w-[16rem]">
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.span
+            key={i}
+            initial={{ y: '110%', opacity: 0, filter: 'blur(6px)' }}
+            animate={{ y: '0%', opacity: 1, filter: 'blur(0px)' }}
+            exit={{ y: '-110%', opacity: 0, filter: 'blur(6px)' }}
+            transition={{ duration: 0.6, ease }}
+            className="col-start-1 row-start-1 font-medium whitespace-nowrap text-white/90"
+          >
+            {items[i]}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+    </span>
+  )
+}
+
 export function Hero() {
+  const { t } = useLang()
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.85])
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.88])
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '20%'])
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '18%'])
 
   // 3D tilt following the pointer
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
-  const rx = useSpring(useTransform(my, [-0.5, 0.5], [12, -12]), { stiffness: 120, damping: 18 })
-  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-16, 16]), { stiffness: 120, damping: 18 })
-  const glareX = useTransform(mx, [-0.5, 0.5], ['20%', '80%'])
-  const glareY = useTransform(my, [-0.5, 0.5], ['10%', '90%'])
-  const glare = useTransform([glareX, glareY], ([x, y]) => `radial-gradient(circle at ${x} ${y}, rgb(255 255 255 / 0.18), transparent 55%)`)
+  const rx = useSpring(useTransform(my, [-0.5, 0.5], [14, -14]), { stiffness: 120, damping: 18 })
+  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-18, 18]), { stiffness: 120, damping: 18 })
+  const glare = useTransform([mx, my], ([x, y]) => `radial-gradient(circle at ${50 + (x as number) * 70}% ${50 + (y as number) * 90}%, rgb(255 255 255 / 0.2), transparent 55%)`)
+
+  const fade = (delay: number) => ({
+    initial: { opacity: 0, y: 24, filter: 'blur(10px)' },
+    animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+    transition: { duration: 1.1, ease, delay },
+  })
 
   return (
     <section
       id="top"
       ref={ref}
-      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-4 pt-28 pb-16"
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-4 pt-28 pb-20"
       onPointerMove={(e) => {
         if (e.pointerType !== 'mouse') return
         mx.set(e.clientX / window.innerWidth - 0.5)
@@ -37,81 +72,52 @@ export function Hero() {
       }}
     >
       <motion.div style={{ scale, opacity, y }} className="flex w-full max-w-5xl flex-col items-center text-center">
-        {/* Logo tile */}
         <div className="[perspective:1200px]">
           <motion.div
             style={{ rotateX: rx, rotateY: ry, transformStyle: 'preserve-3d' }}
             initial={{ opacity: 0, scale: 0.85, filter: 'blur(20px)' }}
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
             transition={{ duration: 1.4, ease }}
-            className="glass relative grid size-56 place-items-center rounded-[2.75rem] sm:size-72"
+            className="glass relative grid size-44 place-items-center rounded-[2.5rem] sm:size-60"
           >
-            <div className="absolute inset-0 -z-10 rounded-[2.75rem] bg-brand/25 blur-3xl" />
-            <motion.div style={{ background: glare }} className="pointer-events-none absolute inset-0 rounded-[2.75rem]" />
+            <div className="absolute inset-0 -z-10 rounded-[2.5rem] bg-brand/25 blur-3xl" />
+            <motion.div style={{ background: glare }} className="pointer-events-none absolute inset-0 rounded-[2.5rem]" />
             <div style={{ transform: 'translateZ(60px)' }}>
-              <LogoMark glow className="h-32 w-auto drop-shadow-[0_20px_30px_rgb(0_0_0/0.6)] sm:h-40" />
+              <LogoMark glow className="h-24 w-auto drop-shadow-[0_20px_30px_rgb(0_0_0/0.6)] sm:h-32" />
             </div>
           </motion.div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease, delay: 0.5 }}
-          className="mt-12"
-        >
-          <Wordmark className="text-sm sm:text-base" />
-        </motion.div>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          transition={{ duration: 1.2, ease, delay: 0.7 }}
-          className="text-gradient mt-6 max-w-4xl text-[clamp(2.6rem,7.5vw,5.75rem)] leading-[1.02] font-semibold tracking-[-0.04em]"
-        >
-          {site.tagline}
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease, delay: 0.9 }}
-          className="mt-6 max-w-xl text-lg leading-relaxed text-white/60 sm:text-xl"
-        >
-          {site.intro}
+        <motion.p {...fade(0.4)} className="mt-10 text-xs font-medium tracking-[0.3em] text-white/50 uppercase sm:text-sm rtl:text-base">
+          {t.hero.kicker}
         </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease, delay: 1.1 }}
-          className="mt-10 flex flex-col gap-3 sm:flex-row"
-        >
-          <Button href={whatsappLink()} external>
-            <WhatsAppIcon /> Chat on WhatsApp
+        <h1 className="mt-5 text-[clamp(2.8rem,8.5vw,6.5rem)] leading-[1] font-semibold tracking-[-0.045em]">
+          <motion.span {...fade(0.55)} className="text-gradient block pb-1">
+            {t.hero.line1}
+          </motion.span>
+          <motion.span {...fade(0.75)} className="text-shimmer block pb-2">
+            {t.hero.line2}
+          </motion.span>
+        </h1>
+
+        <motion.div {...fade(0.95)} className="mt-8">
+          <Rotating items={t.hero.rotating} />
+        </motion.div>
+
+        <motion.p {...fade(1.05)} className="mt-7 max-w-xl text-lg leading-relaxed text-white/60 sm:text-xl rtl:leading-loose">
+          {t.hero.intro}
+        </motion.p>
+
+        <motion.div {...fade(1.2)} className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <Button href={whatsappLink(t.whatsappDefault)} external>
+            <WhatsAppIcon /> {t.hero.primary}
           </Button>
           <Button href="#products" variant="glass">
-            Explore products <ArrowIcon className="size-4 transition-transform group-hover:translate-x-1" />
+            {t.hero.secondary} <ArrowIcon className="size-4 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
           </Button>
         </motion.div>
       </motion.div>
-
-      <motion.a
-        href="#about"
-        aria-label="Scroll down"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <span className="glass flex h-11 w-7 justify-center rounded-full pt-2">
-          <motion.span
-            animate={{ y: [0, 12, 0], opacity: [1, 0.2, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className="block h-2 w-1 rounded-full bg-white/80"
-          />
-        </span>
-      </motion.a>
     </section>
   )
 }
