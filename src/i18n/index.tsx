@@ -7,7 +7,7 @@ type Ctx = { lang: Lang; dir: 'ltr' | 'rtl'; t: Dict; setLang: (l: Lang) => void
 const LangContext = createContext<Ctx | null>(null)
 const KEY = 'ak-lang'
 
-const isLang = (v: unknown): v is Lang => v === 'en' || v === 'ar' || v === 'ku'
+const isLang = (v: unknown): v is Lang => v === 'en' || v === 'ar' || v === 'ku' || v === 'fa'
 
 function initialLang(): Lang {
   const fromUrl = new URLSearchParams(location.search).get('lang')
@@ -21,6 +21,7 @@ function initialLang(): Lang {
   for (const l of navigator.languages ?? [navigator.language]) {
     const code = l.toLowerCase()
     if (code.startsWith('ckb') || code.startsWith('ku')) return 'ku'
+    if (code.startsWith('fa') || code.startsWith('prs')) return 'fa'
     if (code.startsWith('ar')) return 'ar'
     if (code.startsWith('en')) return 'en'
   }

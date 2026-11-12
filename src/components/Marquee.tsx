@@ -3,7 +3,7 @@ import { BoltIcon } from './Icons'
 
 /** Endless band mixing all three languages — a nod to who we serve. */
 export function Marquee() {
-  const words = [...dictionaries.en.marquee.slice(0, 4), ...dictionaries.ar.marquee.slice(0, 4), ...dictionaries.ku.marquee.slice(0, 4), ...dictionaries.en.marquee.slice(4)]
+  const words = [...dictionaries.en.marquee.slice(0, 4), ...dictionaries.ar.marquee.slice(0, 4), ...dictionaries.ku.marquee.slice(0, 4), ...dictionaries.fa.marquee.slice(0, 4), ...dictionaries.en.marquee.slice(4)]
   const row = (
     <div className="flex shrink-0 items-center">
       {words.map((w, i) => (

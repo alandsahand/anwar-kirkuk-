@@ -110,6 +110,10 @@ body {
 [dir='rtl'] body {
   font-family: 'Noto Kufi Arabic Variable', var(--font-sans);
 }
+/* Persian: Vazirmatn is the standard, most readable Persian web font */
+[lang='fa'] body {
+  font-family: 'Vazirmatn Variable', var(--font-sans);
+}
 /* Arabic script is connected: never letter-space it */
 [dir='rtl'] *:not(.latin) {
   letter-spacing: 0 !important;

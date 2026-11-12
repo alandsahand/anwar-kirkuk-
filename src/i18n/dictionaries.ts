@@ -1,15 +1,19 @@
 // ─────────────────────────────────────────────────────────────
-//  All website text in English, Arabic and Kurdish (Sorani).
+//  All website text in English, Arabic, Kurdish (Sorani) and Persian
+//  (Persian lives in fa.ts).
 //  Keep the same structure in every language.
 //  In `statement`, wrap the highlighted words in *stars*.
 // ─────────────────────────────────────────────────────────────
 
-export type Lang = 'en' | 'ar' | 'ku'
+import { fa } from './fa'
+
+export type Lang = 'en' | 'ar' | 'ku' | 'fa'
 
 export const languages: { code: Lang; label: string; short: string; dir: 'ltr' | 'rtl' }[] = [
   { code: 'en', label: 'English', short: 'EN', dir: 'ltr' },
   { code: 'ar', label: 'العربية', short: 'ع', dir: 'rtl' },
   { code: 'ku', label: 'کوردی', short: 'کو', dir: 'rtl' },
+  { code: 'fa', label: 'فارسی', short: 'فا', dir: 'rtl' },
 ]
 
 const en = {
@@ -285,4 +289,5 @@ export const dictionaries: Record<Lang, Dict> = {
   en,
   ar: { ...isolateUnits(ar), products: { ...isolateUnits(ar.products), items: ar.products.items.map((i) => ({ ...isolateUnits(i), name: i.name })), askMessage: ar.products.askMessage } },
   ku: { ...isolateUnits(ku), products: { ...isolateUnits(ku.products), items: ku.products.items.map((i) => ({ ...isolateUnits(i), name: i.name })), askMessage: ku.products.askMessage } },
+  fa,
 }
