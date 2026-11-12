@@ -1,10 +1,14 @@
 {
-  // Cloudflare Workers config: serves the static site built into ./dist
+  // Cloudflare Workers config: serves the static site built into ./dist.
+  // worker/index.js runs only for /videos/* to add range support for Safari.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "anwar-kirkuk",
+  "main": "worker/index.js",
   "compatibility_date": "2025-10-01",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/videos/*"]
   }
 }
