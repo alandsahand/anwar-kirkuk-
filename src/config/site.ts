@@ -37,12 +37,20 @@ export type Video = {
   vertical?: boolean
   /** Optional link to the same video on Facebook / YouTube, shown as a button */
   link?: string
+  /** Subtitle files (WebVTT) per language. Leave a language out if it needs none. */
+  subtitles?: Partial<Record<'en' | 'ar' | 'ku' | 'fa', string>>
 }
 
 export const videos: Video[] = [
   {
     src: `${import.meta.env.BASE_URL}videos/reel-imported-vs-local.mp4`,
     link: 'https://www.facebook.com/reel/1533507298797026/',
+    // Arabic has none: the spoken Arabic is already written on screen.
+    subtitles: {
+      en: `${import.meta.env.BASE_URL}videos/subs/reel-imported-vs-local.en.vtt`,
+      ku: `${import.meta.env.BASE_URL}videos/subs/reel-imported-vs-local.ku.vtt`,
+      fa: `${import.meta.env.BASE_URL}videos/subs/reel-imported-vs-local.fa.vtt`,
+    },
     poster: `${import.meta.env.BASE_URL}videos/reel-imported-vs-local.jpg`,
     vertical: true,
   },

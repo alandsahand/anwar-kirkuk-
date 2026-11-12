@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { useState } from 'react'
 import { videos, type Video } from '../config/site'
-import { useLang } from '../i18n'
+import { languages, useLang } from '../i18n'
 import { FacebookIcon, PlayIcon } from './Icons'
 import { Eyebrow, Reveal, Title } from './ui'
 
@@ -17,13 +17,17 @@ function embedSrc(v: Video) {
 
 /** Shows the poster first; the heavy player loads only after a tap (keeps the page fast). */
 function Player({ video, label }: { video: Video; label: string }) {
+  const { lang } = useLang()
   const [playing, setPlaying] = useState(false)
+  const subtitle = video.subtitles?.[lang]
   const embed = embedSrc(video)
   if (playing) {
     return embed ? (
       <iframe className="size-full" src={embed} title="video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
     ) : (
-      <video className="size-full object-cover" src={video.src} poster={video.poster} controls autoPlay playsInline />
+      <video className="size-full object-cover" src={video.src} poster={video.poster} controls autoPlay playsInline>
+        {subtitle && <track kind="subtitles" src={subtitle} srcLang={lang === 'ku' ? 'ckb' : lang} label={languages.find((l) => l.code === lang)?.label} default />}
+      </video>
     )
   }
   return (

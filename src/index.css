@@ -160,3 +160,17 @@ body {
 .marquee-track {
   animation: marquee 40s linear infinite;
 }
+
+/* Video subtitles */
+video::cue {
+  background: rgb(0 0 0 / 0.65);
+  color: #fff;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+[dir='rtl'] video::cue {
+  font-family: 'Noto Kufi Arabic Variable', sans-serif;
+}
+[lang='fa'] video::cue {
+  font-family: 'Vazirmatn Variable', sans-serif;
+}
